@@ -1,0 +1,3 @@
+[submodule "AHM_C_API"]
+	path = AHM_C_API
+	url = https://github.com/ARIA-Sensing-srl/AHM_C_API.git
