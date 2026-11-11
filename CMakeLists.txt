@@ -26,14 +26,11 @@ endif()
 
 # Find nanobind and Python
 find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
-#find_package(nanobind REQUIRED PATHS "C:/Users/AndreaPort/AppData/Local/Programs/Python/Python313/Lib/site-packages/nanobind/cmake" NO_DEFAULT_PATH)
 execute_process(
   COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
   OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT)
 find_package(nanobind CONFIG REQUIRED)
-#find_package(nanobind REQUIRED PATHS "/home/nbodei/.local/lib/python3.12/site-packages/nanobind/cmake" NO_DEFAULT_PATH)
 set (SUBMODULE_PATH "AHM_C_API")
-#set(CMAKE_C_FLAGS_INIT "-std=c99")
 
 if (MSVC)
 add_definitions(-DWIN)
@@ -44,7 +41,7 @@ nanobind_add_module(
   binding/bindings.cpp
   binding/radarhandler.cpp
 )
-#set (srclist )
+
 list ( APPEND SRCLIST binding/bindings.cpp
     binding/radarhandler.cpp
     binding/radarhandler.h

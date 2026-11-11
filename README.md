@@ -19,24 +19,25 @@ Ensure your system meets the following requirements:
 First, clone the repository and navigate to the project root directory:
 
 ```bash
-git clone https://github.com <!-- Bisogna sostituire con il link e la directory corrette -->
+git clone https://github.com/ARIA-Sensing-srl/APIPython.git
+```
+```bash
 cd APIPython
+```
+```bash
+git submodule update --init --recursive
 ```
 
 Install the extension module using `pip`:
 
-```bash
+```bash (for Linux)
 pip install .
+```
+```bash (for Windows)
+python.exe -m pip install .
 ```
 
 This command automatically triggers `scikit-build-core`, builds the C++ extensions with stable ABI support (`abi3`), and installs the final `AHMAPIpy` module.
-
-## Supported Architecture
-
-The `CMakeLists.txt` build pipeline handles cross-platform differences based on the compiler and available system libraries:
-
-*   **Windows (MSVC compiler):** Automatically defines the `-DWIN` macro and compiles serial communication using native Windows API headers (`winSerial.c`).
-*   **Linux/POSIX (Non-MSVC compilers):** Compiles serial communication using POSIX-compliant headers (`wiringSerial.c`).
 
 ## Verification
 
