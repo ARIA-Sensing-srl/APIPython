@@ -112,11 +112,11 @@ int RadarHandler::rdr_start() {
 int RadarHandler::rdr_stop() {
     return rdr_h->rdr_stop();
 };
-int RadarHandler::rdr_set_frame_rate(uint16_t p) {
-    return rdr_h->rdr_set_frame_rate(p);
+int RadarHandler::rdr_set_fps(uint16_t p) {
+    return rdr_h->rdr_set_fps(p);
 };
-int RadarHandler::rdr_get_frame_rate(uint16_t * p) {
-    return rdr_h->rdr_get_frame_rate(p);
+int RadarHandler::rdr_get_fps(uint16_t * p) {
+    return rdr_h->rdr_get_fps(p);
 };
 int RadarHandler::rdr_set_tx_power(uint8_t p) {
     return rdr_h->rdr_set_tx_power(p);
@@ -154,11 +154,11 @@ int RadarHandler::rdr_set_declutter_length (uint16_t p) {
 int RadarHandler::rdr_get_declutter_length (uint16_t * p) {
     return rdr_h->rdr_get_declutter_length(p);
 };
-int RadarHandler::rdr_set_elabtype(rdrElabTypes_t p) {
-    return rdr_h->rdr_set_elabtype(p);
+int RadarHandler::rdr_set_elab(rdrElabTypes_t p) {
+    return rdr_h->rdr_set_elab(p);
 };
-int RadarHandler::rdr_get_elabtype(rdrElabTypes_t * p) {
-    return rdr_h->rdr_get_elabtype(p);
+int RadarHandler::rdr_get_elab(rdrElabTypes_t * p) {
+    return rdr_h->rdr_get_elab(p);
 };
 int RadarHandler::rdr_set_optproc(uint8_t opt0, uint8_t opt1) {
     return rdr_h->rdr_set_optproc(opt0, opt1);
@@ -172,17 +172,17 @@ int RadarHandler::rdr_set_sequence(uint8_t * txSeqMask, uint8_t* rxSeqMask, uint
 int RadarHandler::rdr_get_sequence(uint8_t * txSeqMask, uint8_t* rxSeqMask, uint8_t * numSeq) {
     return rdr_h->rdr_get_sequence(txSeqMask, rxSeqMask, numSeq);
 };
-int RadarHandler::rdr_set_freq_carrier(uint16_t carrierMHz) {
-    return rdr_h->rdr_set_freq_carrier(carrierMHz);
+int RadarHandler::rdr_set_carrier_frequency(uint16_t carrierMHz) {
+    return rdr_h->rdr_set_carrier_frequency(carrierMHz);
 };
-int RadarHandler::rdr_get_freq_carrier(uint16_t * carrierMHz) {
-    return rdr_h->rdr_get_freq_carrier(carrierMHz);
+int RadarHandler::rdr_get_carrier_frequency(uint16_t * carrierMHz) {
+    return rdr_h->rdr_get_carrier_frequency(carrierMHz);
 };
-int RadarHandler::rdr_set_bw(uint16_t bwMHz) {
-    return rdr_h->rdr_set_bw(bwMHz);
+int RadarHandler::rdr_set_pulse_bandwidth(uint16_t bwMHz) {
+    return rdr_h->rdr_set_pulse_bandwidth(bwMHz);
 };
-int RadarHandler::rdr_get_bw(uint16_t * bwMHz) {
-    return rdr_h->rdr_get_bw(bwMHz);
+int RadarHandler::rdr_get_pulse_bandwidth(uint16_t * bwMHz) {
+    return rdr_h->rdr_get_pulse_bandwidth(bwMHz);
 };
 int RadarHandler::rdr_set_bwmode(uint8_t bwmode) {
     return rdr_h->rdr_set_bwmode(bwmode);
@@ -202,11 +202,11 @@ int RadarHandler::rdr_set_gain(uint16_t gainI, uint16_t gainQ) {
 int RadarHandler::rdr_get_gain(uint16_t * gainI, uint16_t *gainQ) {
     return rdr_h->rdr_get_gain(gainI, gainQ);
 };
-int RadarHandler::rdr_get_fSampling(uint16_t * fMhz) {
-    return rdr_h->rdr_get_fSampling(fMhz);
+int RadarHandler::rdr_get_adcfreq(uint16_t * fMhz) {
+    return rdr_h->rdr_get_adcfreq(fMhz);
 };
-int RadarHandler::rdr_get_arrayDescr(txAntDesc_t * p1, rxAntDesc_t * p2) {
-    return rdr_h->rdr_get_arrayDescr(p1, p2);
+int RadarHandler::rdr_get_antConfig(txAntDesc_t * p1, rxAntDesc_t * p2) {
+    return rdr_h->rdr_get_antConfig(p1, p2);
 };
 int RadarHandler::rdr_set_canvas(canvas2d_param_t p) {
     return rdr_h->rdr_set_canvas(p);
@@ -214,11 +214,11 @@ int RadarHandler::rdr_set_canvas(canvas2d_param_t p) {
 int RadarHandler::rdr_get_canvas(canvas2d_param_t * p) {
     return rdr_h->rdr_get_canvas(p);
 };
-int RadarHandler::rdr_set_fmt(uint8_t fmt) {
-    return rdr_h->rdr_set_fmt(fmt);
+int RadarHandler::rdr_set_data_fmt(uint8_t fmt) {
+    return rdr_h->rdr_set_data_fmt(fmt);
 };
-int RadarHandler::rdr_get_fmt(uint8_t * fmt) {
-    return rdr_h->rdr_get_fmt(fmt);
+int RadarHandler::rdr_get_data_fmt(uint8_t * fmt) {
+    return rdr_h->rdr_get_data_fmt(fmt);
 };
 int RadarHandler::rdr_rx_multichannel(radarData<cplx_float_t> * prd) {
     return rdr_h->rdr_rx_multichannel(prd);
@@ -229,11 +229,11 @@ int RadarHandler::rdr_get_image(radarData<float> * prd) {
 int RadarHandler::rdr_set_baudrate(uint32_t br) {
     return rdr_h->rdr_set_baudrate(br);
 };
-int RadarHandler::rdr_set_multistream(uint16_t nstream) {
-    return rdr_h->rdr_set_multistream(nstream);
+int RadarHandler::rdr_set_multistreammode(uint16_t nstream) {
+    return rdr_h->rdr_set_multistreammode(nstream);
 };
-int RadarHandler::rdr_get_multistream(uint16_t *pnstream) {
-    return rdr_h->rdr_get_multistream(pnstream);
+int RadarHandler::rdr_get_multistreammode(uint16_t *pnstream) {
+    return rdr_h->rdr_get_multistreammode(pnstream);
 };
 int RadarHandler::rdr_conv_mask2sequence(uint8_t * txMask, uint8_t * rxMask, scanSequence_t * pseq, int num) {
     return rdr_h->rdr_conv_mask2sequence(txMask, rxMask, pseq, num);
@@ -270,6 +270,18 @@ int RadarHandler::rdr_set_embeddedImgAlgo(uint8_t enable) {
 };
 int RadarHandler::rdr_get_embeddedImgAlgo(uint8_t* penable) {
     return rdr_h->rdr_get_embeddedImgAlgo(penable);
+};
+int RadarHandler::rdr_get_version_fw(RdrFWVer_t* p) {
+    return rdr_h->rdr_get_version_fw(p);
+};
+int RadarHandler::rdr_set_range(float min, float max) {
+    return rdr_h->rdr_set_range(min, max);
+};
+int RadarHandler::rdr_get_range(float* pmin, float* pmax) {
+    return rdr_h->rdr_get_range(pmin, pmax);
+};
+int RadarHandler::rdr_get_versExtended(std::string * pstr, uint8_t type) {
+    return rdr_h->rdr_get_versExtended(pstr, type);
 };
 RadarHandler::~RadarHandler(){};
 
