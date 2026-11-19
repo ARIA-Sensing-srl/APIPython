@@ -67,7 +67,6 @@ public:
     int rdr_conv_mask2sequence(uint8_t * txMask, uint8_t * rxMask, scanSequence_t * pseq, int num) override;
     int rdr_set_canvas(canvas3d_param_t) override;
     int rdr_get_canvas(canvas3d_param_t *) override;
-    // new
     int rdr_set_profile(profile_t) override;
     int rdr_set_staticObjRemoval(uint8_t enable) override;
     int rdr_get_staticObjRemoval(uint8_t * penable) override;
@@ -81,6 +80,22 @@ public:
     int rdr_set_range(float min, float max) override;
     int rdr_get_range(float* pmin, float* pmax) override;
     int rdr_get_versExtended(std::string * pstr, uint8_t type = 0) override;
+    // new
+    int rdr_set_SNRs(float SNRs[4]) override;
+    int rdr_set_SNRranges(float SNRranges[3]) override;
+    int rdr_set_SNRpwrs(float SNRpwrs[3]) override;
+    int rdr_get_SNRs(float SNRs[4]) override;
+    int rdr_get_SNRranges(float SNRranges[3]) override;
+    int rdr_get_SNRpwrs(float SNRpwrs[3]) override;
+    int rdr_set_blobFilter(blobFilter_param_t) override;
+    int rdr_get_blobFilter(blobFilter_param_t*) override;
+    int rdr_set_kalman2D(kalmand_2D_param_t) override;
+    int rdr_get_kalman2D(kalmand_2D_param_t*) override;
+    int rdr_get_detection2D(std::vector<det_blob_t>* p) override;
+    int rdr_get_detection2D(std::vector<det_pos_t>* p, bool filtered) override;
+    int rdr_get_detection2D(std::vector<det_pos_full_t>* p, bool filtered) override;
+
+
 };
 
 #endif

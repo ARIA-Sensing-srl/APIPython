@@ -43,6 +43,7 @@ NB_MODULE(AHMAPIpy, m) {
         .def_rw("phiStep", &canvas2d_param_t::phiStep, "(float) azimuth stride.")
         .def_rw("algo",    &canvas2d_param_t::algo, "(enumerated recAlgo) selected reconstruction algorithm, 0: DAS with apodization, 1: DMAS with apodization.");
 
+    // Binds the struct ant_t
     nb::class_<ant_t>(m, "ant", "Represents antenna properties")
         .def(nb::init<>())
         .def_rw("x",  &ant_t::x, "(float) antenna’s X coordinates in meters.")
@@ -63,7 +64,6 @@ NB_MODULE(AHMAPIpy, m) {
 
     nb::class_<rxAntDesc_t>(m, "rxAntDesc", "Contains information about receive antennas")
         .def(nb::init<>())
-        .def(nb::init<>())
         .def_prop_ro("ant", [](const rxAntDesc_t &self) {
             nb::list l;
             for (size_t i = 0; i < 4; i++) {
@@ -71,8 +71,80 @@ NB_MODULE(AHMAPIpy, m) {
                 l.append(nb::cast(self.ant[i], nb::rv_policy::copy));
             }
             return l;
-        },"List of 4 receive antenna properties (ant)");
+        }, "List of 4 receive antenna properties (ant)");
 
+    // Binds the struct kalmand_2D_param_t
+    nb::class_<kalmand_2D_param_t>(m, "kalmand_2D_param", "Configuration parameters for kalman 2D algorithm")
+        .def(nb::init<>())
+        .def_rw("meas_unc",  &kalmand_2D_param_t::meas_unc, "(float) measure uncertainity.")
+        .def_rw("speed_unc", &kalmand_2D_param_t::speed_unc, "(float) covariance matrix, initial speed uncertainty.")
+        .def_rw("pos_unc", &kalmand_2D_param_t::pos_unc, "(float) covariance matrix: initial position uncertainty.")
+        .def_rw("acc_unc",  &kalmand_2D_param_t::acc_unc, "(float) acceleration standard deviation.")
+        .def_rw("gateOutTicks",  &kalmand_2D_param_t::gateOutTicks, "(int) track gating, maximum tracking lost time for target remove (1/FPS units).")
+        .def_rw("gateInTicks", &kalmand_2D_param_t::gateInTicks, "(int) track gating , minimum pre -tracking time before target engage (1/FPS units).")
+        .def_rw("parRunTicks",    &kalmand_2D_param_t::parRunTicks, "(int) maximum parallel run before prune track (1/FPS units).");
+
+    // Binds the struct blobFilter_param_t
+    nb::class_<blobFilter_param_t>(m, "blobFilter_param", "Configuration parameters for blob filter")
+        .def(nb::init<>())
+        .def_rw("phiSpan",  &blobFilter_param_t::phiSpan, "(float) blob pruning, minimum angular distance in radiant.")
+        .def_rw("amplDecay", &blobFilter_param_t::amplDecay, "(float)  blob pruning, thresholding amplitude decay due to shadowing.")
+        .def_rw("topDetWndSize",  &blobFilter_param_t::topDetWndSize, "(int) peak detector: minimum peak size (in samples).")
+        .def_rw("top2SideThr",  &blobFilter_param_t::top2SideThr, "(float) peak detector: top to side ratio.")
+        .def_rw("sideGuard", &blobFilter_param_t::sideGuard, "(int) set to 0.");
+
+    // Binds the struct det_blob_t
+    nb::class_<det_blob_t>(m, "det_blob", "Position parameters rho, phi for blob detection")
+        .def(nb::init<>())
+        .def_rw("rho",  &det_blob_t::rho, "(float) rho position.")
+        .def_rw("phi", &det_blob_t::phi, "(float) phy position.");
+
+    // Binds the struct det_pos_t
+    nb::class_<det_pos_t>(m, "det_blob", "Position parameters x, y, id for 2D detection")
+        .def(nb::init<>())
+        .def_rw("x",  &det_pos_t::x, "(float) x position in meters.")
+        .def_rw("y", &det_pos_t::y, "(float) y position in meters.")
+        .def_rw("ID", &det_pos_t::ID, "(float) track ID.");
+
+    // Binds the struct, with this instruction
+    nb::class_<det_pos_full_t>(m, "det_pos_full", "Contains full 2D detection position, state vector, and covariance matrix")
+        .def(nb::init<>())
+        .def_rw("ID", &det_pos_full_t::ID, "Target ID")
+
+        // Exposes the sv array (Getter and Setter)
+        .def_prop_rw("sv",
+            // GETTER: Invoked when reading the property in Python
+            [](const det_pos_full_t &self) {
+                return std::vector<float>(self.sv, self.sv + 4);
+            },
+            // SETTER: Invoked when writing to the property in Python
+            [](det_pos_full_t &self, const std::vector<float> &val) {
+                size_t size = std::min(val.size(), (size_t)4);
+                for (size_t i = 0; i < size; ++i) {
+                    self.sv[i] = val[i];
+                }
+            }
+        , "Represents state as a [x, vx, y, vy] array (position and velocity)")
+        .def_prop_rw("P",
+            // GETTER: Invoked when reading the property in Python
+            [](const det_pos_full_t &self) {
+                std::vector<std::vector<float>> mat;
+                mat.reserve(4);
+                for (size_t i = 0; i < 4; ++i) {
+                    mat.emplace_back(self.P[i], self.P[i] + 4);
+                }
+                return mat;
+            },
+            // SETTER: Invoked when writing to the property in Python
+            [](det_pos_full_t &self, const std::vector<std::vector<float>> &val) {
+                size_t rows = std::min(val.size(), (size_t)4);
+                for (size_t i = 0; i < rows; ++i) {
+                    size_t cols = std::min(val[i].size(), (size_t)4);
+                    for (size_t j = 0; j < cols; ++j) {
+                        self.P[i][j] = val[i][j];
+                    }
+                 }
+            }, "4x4 Covariance matrix");
 
     // Binds the recAlgo_t
     nb::enum_<recAlgo_t>(m, "recAlgo", "Contains information about the algorithm used internally")
@@ -831,6 +903,230 @@ NB_MODULE(AHMAPIpy, m) {
 
         Return:
             RdrFW_ex (string): Firmware information.
+        )doc")
+
+        .def("rdr_set_SNRs", [](RadarHandler &self, std::vector<float> SNRs) -> void {
+        self.rdr_set_SNRs(SNRs.data());}, "SNRs"_a, R"doc(
+        Set the SNR amplitude of the threshold profile.
+
+        Args:
+            enable (float(4)): SNR value (absolute)
+        )doc")
+        .def("rdr_get_SNRs", [](RadarHandler &self){
+            std::vector<float> SNRs(4);
+            int ret = self.rdr_get_SNRs(SNRs.data());
+            if (ret) {
+                throw std::runtime_error("Communication problem");
+            }
+            return SNRs;
+        }, R"doc(
+        Get the current SNR amplitude of the threshold profile.
+
+        Returns:
+            SNRs (float(4)): Current value of the SNR
+        )doc")
+
+        .def("rdr_set_SNRranges",[](RadarHandler &self, std::vector<float> SNRranges) -> void {
+        self.rdr_set_SNRranges(SNRranges.data());}, "SNRranges"_a, R"doc(
+        Set the ranges point of the threshold profile.
+
+        Args:
+            SNRranges (float(3)): exponent of the profile.
+        )doc")
+        .def("rdr_get_SNRranges", [](RadarHandler &self){
+            std::vector<float> SNRranges(3);
+            int ret = self.rdr_get_SNRranges(SNRranges.data());
+            if (ret) {
+                throw std::runtime_error("Communication problem");
+            }
+            return SNRranges;
+        }, R"doc(
+        Get the current ranges point of the threshold profile.
+
+        Returns:
+            SNRranges (float(3)): Range profile point in meters.
+        )doc")
+
+        .def("rdr_set_SNRpwrs", [](RadarHandler &self, std::vector<float> SNRpwrs) -> void {
+            self.rdr_set_SNRpwrs(SNRpwrs.data());}, "SNRpwrs"_a, R"doc(
+        Set the SNR powers of the threshold profile.
+
+        Args:
+            SNRpwrs (float(3)): Enabling state of the device.
+        )doc")
+        .def("rdr_get_SNRpwrs", [](RadarHandler &self){
+            std::vector<float> SNRpwrs(3);
+            int ret = self.rdr_get_SNRpwrs(SNRpwrs.data());
+            if (ret) {
+                throw std::runtime_error("Communication problem");
+            }
+            return SNRpwrs;
+        }, R"doc(
+        Get the current SNR powers of the threshold profile.
+
+        Returns:
+            SNRpwrs (float(3)): Current exponent.
+        )doc")
+
+        .def("rdr_set_blobFilter", &RadarHandler::rdr_set_blobFilter, "bF"_a, R"doc(
+        Set parameters used by the blob filter.
+
+        Args:
+            bF (blobFilter_param): Configuration parameters.
+        )doc")
+        .def("rdr_get_blobFilter", [](RadarHandler &self){
+            blobFilter_param_t bF;
+            int ret = self.rdr_get_blobFilter(&bF);
+            if(ret){
+                throw std::runtime_error("Communication problem");
+            }
+            return bF;
+        }, R"doc(
+        Current parameters used by the blob filter.
+
+        Returns:
+            bF (blobFilter_param): Current configuration of blob filter parameters.
+        )doc")
+
+        .def("rdr_set_kalman2D", &RadarHandler::rdr_set_kalman2D, "k"_a, R"doc(
+        Controls the execution of the algorithm responsible for computing the output image (2D devices only).
+        When this algorithm is activated, the embedded processor combines the streams and calculates the
+        output image.
+
+        Args:
+            enable (int): Enabling state of the device.
+        )doc")
+        .def("rdr_get_kalman2D", [](RadarHandler &self){
+            kalmand_2D_param_t k;
+            int ret = self.rdr_get_kalman2D(&k);
+            if(ret){
+                throw std::runtime_error("Communication problem");
+            }
+            return k;
+        }, R"doc(
+        Controls the execution of the algorithm responsible for computing the output image (2D devices only).
+        When this algorithm is activated, the embedded processor combines the streams and calculates the
+        output image.
+
+        Args:
+            enable (int): Enabling state of the device.
+        )doc")
+
+        .def("rdr_get_detection2D_blob", [](RadarHandler &self) {
+            std::vector<det_blob_t> p;
+            int ret = self.rdr_get_detection2D(&p);
+            if (ret) {
+                throw std::runtime_error("Communication problem");
+            }
+            size_t rows = p.size();
+            size_t cols = 2;
+
+            float* raw_data = new float[rows * cols];
+
+            for (size_t r = 0; r < rows; r++) {
+                float rho  = p[r].rho;
+                float phi  = p[r].phi;
+
+                raw_data[r * cols + 0] = rho;
+                raw_data[r * cols + 1] = phi;
+            }
+
+            nb::capsule owner(raw_data, [](void *p) noexcept {
+                delete[] static_cast<float*>(p);
+            });
+
+            auto array_numpy = nb::ndarray<nb::numpy, float, nb::ndim<2>>(
+                raw_data,
+                { rows, cols },
+                owner
+                );
+
+            return nb::make_tuple(array_numpy, std::move(p));
+        }, R"doc(
+        Return current detection output, only 2D devices are supported.
+
+        Returns:
+            tuple[numpy array, det_blob]: A tuple containing the position matrix output and a list of each blob's state.
+        )doc")
+
+        .def("rdr_get_detection2D_pos", [](RadarHandler &self, bool filtered) {
+            std::vector<det_pos_t> p;
+            int ret = self.rdr_get_detection2D(&p, filtered);
+            if (ret != 0) {
+                throw std::runtime_error("Communication problem");
+            }
+
+            size_t rows = p.size();
+            size_t cols = 3;
+
+            float* raw_data = new float[rows * cols];
+
+            for (size_t r = 0; r < rows; r++) {
+                float x  = p[r].x;
+                float y  = p[r].y;
+                float id = static_cast<float>(p[r].ID);
+
+                raw_data[r * cols + 0] = x;
+                raw_data[r * cols + 1] = y;
+                raw_data[r * cols + 2] = id;
+            }
+
+            nb::capsule owner(raw_data, [](void *p) noexcept {
+                delete[] static_cast<float*>(p);
+            });
+
+            auto array_numpy = nb::ndarray<nb::numpy, float, nb::ndim<2>>(
+                raw_data,
+                { rows, cols },
+                owner
+                );
+
+            return nb::make_tuple(array_numpy, std::move(p));
+        }, R"doc(
+        Return current detection output, only 2D devices are supported.
+
+        Returns:
+            tuple[numpy array, det_pos]: A tuple containing the position matrix output and a list of each target's state.
+        )doc")
+
+        .def("rdr_get_detection2D_pos_full", [](RadarHandler &self, bool filtered) {
+            std::vector<det_pos_full_t> p;
+            int ret = self.rdr_get_detection2D(&p, filtered);
+            if (ret != 0) {
+                throw std::runtime_error("Communication problem");
+            }
+
+            size_t rows = p.size();
+            size_t cols = 3;
+
+            float* raw_data = new float[rows * cols];
+
+            for (size_t r = 0; r < rows; r++) {
+                float x  = p[r].sv[0];
+                float y  = p[r].sv[2];
+                float id = static_cast<float>(p[r].ID);
+
+                raw_data[r * cols + 0] = x;
+                raw_data[r * cols + 1] = y;
+                raw_data[r * cols + 2] = id;
+            }
+
+            nb::capsule owner(raw_data, [](void *p) noexcept {
+                delete[] static_cast<float*>(p);
+            });
+
+            auto array_numpy = nb::ndarray<nb::numpy, float, nb::ndim<2>>(
+                raw_data,
+                { rows, cols },
+                owner
+                );
+
+            return nb::make_tuple(array_numpy,std::move(p));
+        }, R"doc(
+        Return current detection output, only 2D devices are supported.
+
+        Returns:
+            tuple[numpy array, det_pos]: A tuple containing the position matrix output and a list of each target's state.
         )doc");
 }
 

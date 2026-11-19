@@ -283,5 +283,45 @@ int RadarHandler::rdr_get_range(float* pmin, float* pmax) {
 int RadarHandler::rdr_get_versExtended(std::string * pstr, uint8_t type) {
     return rdr_h->rdr_get_versExtended(pstr, type);
 };
+int RadarHandler::rdr_set_SNRs(float SNRs[4]) {
+    return rdr_h->rdr_set_SNRs(SNRs);
+};
+int RadarHandler::rdr_set_SNRranges(float SNRranges[3]) {
+    return rdr_h->rdr_set_SNRranges(SNRranges);
+};
+int RadarHandler::rdr_set_SNRpwrs(float SNRpwrs[3]) {
+    return rdr_h->rdr_set_SNRpwrs(SNRpwrs);
+};
+int RadarHandler::rdr_get_SNRs(float SNRs[4]) {
+    return rdr_h->rdr_get_SNRs(SNRs);
+};
+int RadarHandler::rdr_get_SNRranges(float SNRranges[3]) {
+    return rdr_h->rdr_get_SNRs(SNRranges);
+};
+int RadarHandler::rdr_get_SNRpwrs(float SNRpwrs[3]) {
+    return rdr_h->rdr_get_SNRpwrs(SNRpwrs);
+};
+int RadarHandler::rdr_set_blobFilter(blobFilter_param_t bF) {
+    return rdr_h->rdr_set_blobFilter(bF);
+};
+int RadarHandler::rdr_get_blobFilter(blobFilter_param_t* bF) {
+    return rdr_h->rdr_get_blobFilter(bF);
+};
+int RadarHandler::rdr_set_kalman2D(kalmand_2D_param_t k) {
+    return rdr_h->rdr_set_kalman2D(k);
+};
+int RadarHandler::rdr_get_kalman2D(kalmand_2D_param_t* k) {
+    return rdr_h->rdr_get_kalman2D(k);
+};
+int RadarHandler::rdr_get_detection2D(std::vector<det_blob_t>* p) {
+    return rdr_h->rdr_get_detection2D(p);
+};
+int RadarHandler::rdr_get_detection2D(std::vector<det_pos_t>* p, bool filtered) {
+    return rdr_h->rdr_get_detection2D(p, filtered);
+};
+int RadarHandler::rdr_get_detection2D(std::vector<det_pos_full_t>* p, bool filtered) {
+    return rdr_h->rdr_get_detection2D(p, filtered);
+};
+
 RadarHandler::~RadarHandler(){};
 
