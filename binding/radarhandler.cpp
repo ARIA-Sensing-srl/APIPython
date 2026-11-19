@@ -26,6 +26,7 @@
 #include "radar_AHM2D.h"
 #include "radar_AHM3D.h"
 #include "radar_AHM2DL.h"
+#include "radar_AHM2DSC.h"
 
 #include "radar_api_base.h"
 
@@ -59,6 +60,10 @@ radar_api_base * RadarHandler::openDevice(rifll_h * comm_h){
         if (hwCode == rdr_AHM2DL::HWID){
             printf("Detected AHM2DL\n");
             return new radar_AHM2DL(comm_h);
+        }
+		if (hwCode == rdr_AHM2DSC::HWID){
+            printf("Detected AHM2DSC\n");
+            return new radar_AHM2DSC(comm_h);
         }
             printf("Unknown radar ID %x\n", hwCode);
             return NULL;

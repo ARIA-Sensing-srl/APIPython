@@ -59,7 +59,9 @@ list ( APPEND SRCLIST binding/bindings.cpp
     ${SUBMODULE_PATH}/radar_handlers/radar_AHM2DL.cpp
     ${SUBMODULE_PATH}/radar_handlers/radar_AHM2DL.h
     ${SUBMODULE_PATH}/radar_handlers/radar_AHM3D.cpp
-    ${SUBMODULE_PATH}/radar_handlers/radar_AHM3D.h
+	${SUBMODULE_PATH}/radar_handlers/radar_AHM3D.h
+	${SUBMODULE_PATH}/radar_handlers/radar_AHM2DSC.cpp
+	${SUBMODULE_PATH}/radar_handlers/radar_AHM2DSC.h
     ${SUBMODULE_PATH}/radar_handlers/radar_api_base.cpp
     ${SUBMODULE_PATH}/radar_handlers/radar_api_base.h
     ${SUBMODULE_PATH}/src/f16tosingle.cpp
